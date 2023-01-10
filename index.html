@@ -43,12 +43,16 @@
       // Displays the device chooser to allow the user to connect to a new device.
       // The selection is updated to the newly connected device.
       const connectDevice = () => {
-        navigator.hid.requestDevice({ filters: [] }).then((devices) => {
-          if (devices.length == 0) return;
+        navigator.hid
+          .requestDevice({
+            filters: [{ vendorId: 0x045e }], // Microsoft Corp.
+          })
+          .then((devices) => {
+            if (devices.length == 0) return;
 
-          for (let device of devices) addDevice(device);
-          selectDevice(devices[0]);
-        });
+            for (let device of devices) addDevice(device);
+            selectDevice(devices[0]);
+          });
       };
 
       // Adds |device| to |connectedDevices|. Selects the device if there was no prior
