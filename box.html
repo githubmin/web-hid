@@ -1,0 +1,111 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>3d box</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
+    <script>
+      var scene;
+      var cube;
+      var camera;
+      var renderer;
+
+      window.onload = () => {
+        const width = 400;
+        const height = 600;
+
+        // scene
+        scene = new THREE.Scene();
+
+        // mesh
+        const geometry = new THREE.BoxGeometry(40, 60, 20);
+        var materials = [
+          new THREE.MeshBasicMaterial({ color: 0x00ff00 }),
+          new THREE.MeshBasicMaterial({ color: 0x00ff00 }),
+          new THREE.MeshBasicMaterial({ color: 0xff0000 }),
+          new THREE.MeshBasicMaterial({ color: 0xff0000 }),
+          new THREE.MeshBasicMaterial({ color: 0x0000ff }),
+          new THREE.MeshBasicMaterial({ color: 0x0000ff }),
+        ];
+        cube = new THREE.Mesh(geometry, materials);
+        scene.add(cube);
+
+        //camera
+        camera = new THREE.PerspectiveCamera(25, width / height, 1, 1000);
+        camera.position.set(0, 0, 300);
+        camera.lookAt(cube.position);
+
+        // rendering
+        renderer = new THREE.WebGLRenderer();
+        renderer.setSize(width, height);
+        renderer.setClearColor(0xeeeeee, 1);
+        renderer.shadowMap = true;
+        document.getElementById("stage").appendChild(renderer.domElement);
+
+        resetBox();
+      };
+
+      const update = ({ x, y, z }) => {
+        cube.rotation.x = x ?? cube.rotation.x;
+        cube.rotation.y = y ?? cube.rotation.y;
+        cube.rotation.z = z ?? cube.rotation.z;
+        renderer.render(scene, camera);
+      };
+
+      const onAxisX = (v) => update({ x: (v * 3.14) / 180 });
+      const onAxisY = (v) => update({ y: (v * 3.14) / 180 });
+      const onAxisZ = (v) => update({ z: (v * 3.14) / 180 });
+
+      const resetBox = () => {
+        document.getElementById("axis-x").value = 0;
+        document.getElementById("axis-y").value = 0;
+        document.getElementById("axis-z").value = 0;
+        update({ x: 0, y: 0, z: 0 });
+      };
+    </script>
+  </head>
+  <body>
+    <div id="stage"></div>
+    <div>
+      <input
+        type="range"
+        id="axis-x"
+        name="axis-x"
+        min="0"
+        max="360"
+        value="0"
+        oninput="onAxisX(this.value)"
+        onchange="onAxisX(this.value)"
+      />
+      <label for="axis-x">Axis-X</label>
+    </div>
+    <div>
+      <input
+        type="range"
+        id="axis-y"
+        name="axis-y"
+        min="0"
+        max="360"
+        value="0"
+        oninput="onAxisY(this.value)"
+        onchange="onAxisY(this.value)"
+      />
+      <label for="axis-y">Axis-Y</label>
+    </div>
+    <div>
+      <input
+        type="range"
+        id="axis-z"
+        name="axis-z"
+        min="0"
+        max="360"
+        value="0"
+        oninput="onAxisZ(this.value)"
+        onchange="onAxisZ(this.value)"
+      />
+      <label for="axis-z">Axis-Z</label>
+    </div>
+    <div>
+      <button onclick="resetBox()">Reset</button>
+    </div>
+  </body>
+</html>
